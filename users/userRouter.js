@@ -2,6 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 
+const db = require('./userDb');
+
 router.post('/', (req, res) => {
   // do your magic!
 });
@@ -14,8 +16,8 @@ router.get('/', (req, res) => {
   // do your magic!
 });
 
-router.get('/:id', (req, res) => {
-  // do your magic!
+router.get('/:id', validateUserId, (req, res) => {
+  res.status(200).json({ message: 'FRICK' });
 });
 
 router.get('/:id/posts', (req, res) => {
@@ -33,7 +35,15 @@ router.put('/:id', (req, res) => {
 //custom middleware
 
 function validateUserId(req, res, next) {
-  // do your magic!
+  db
+  .getById(parseInt(req.params.id))
+  .then(data => {
+    console.log(data);
+    next();
+  })
+  .catch(err => {
+    res.status(400).json({ message: "invalid user id" })
+  })
 }
 
 function validateUser(req, res, next) {
